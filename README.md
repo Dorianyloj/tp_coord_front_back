@@ -24,11 +24,9 @@ Veuillez réaliser les étapes suivantes pour executer la stack :
 Pour lancer la stack, executez la commande suivante :  
 `docker compose watch`
 
-Au lancement, le service `db_migration_course_fullstack` s'occupera d'appliquer les migrations de base de données managées par `SQLAlchemy`.
+Au lancement, le service `db_migration_tp_coord_front_back` s'occupera d'appliquer les migrations de base de données managées par `SQLAlchemy`.
 
 ## Utilisation
 Après le lancement, accèdez au backend flask à l'URL suivante pour vous créer un compte http://localhost:5005/register. Vous pourrez ensuite aller sur http://localhost:5005/login pour vous connecter.
 L'API swagger est disponible à l'URL suivante :  
 http://localhost:5005/apidocs
-
-Depuis Swagger, créez une `Company` depuis l'endpoint correspondant pour pouvoir par la suite y associer des produits depuis le frontend.
