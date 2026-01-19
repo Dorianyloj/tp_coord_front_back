@@ -1,42 +1,51 @@
-Get single Product endpoint
+Create/Update Product endpoint
 ---
 tags:
   - Products
+consumes:
+  - application/json
 parameters:
-  - in: formData
-    name: name
-    type: string
+  - in: body
+    name: body
     required: true
-  - in: formData
-    name: comment
-    type: string
-    required: true
-  - in: formData
-    name: quantity
-    type: number
-    required: true
-  - in: formData
-    name: company_id
-    type: string
-    required: true
+    schema:
+      type: object
+      required:
+        - name
+        - comment
+        - quantity
+        - company_id
+      properties:
+        name:
+          type: string
+          example: "Keyboard Roccat"
+        comment:
+          type: string
+          example: "Nice keyboard"
+        quantity:
+          type: integer
+          example: 2
+        company_id:
+          type: integer
+          example: 1
 definitions:
   Product:
     type: object
     properties:
       id:
-        type: string
+        type: integer
       name:
         type: string
       comment:
         type: string
       quantity:
-        type: string
+        type: integer
       company_id:
-        type: string
+        type: integer
 responses:
   200:
-    description: A product matching the specified id
+    description: The created/updated product
     schema:
       $ref: '#/definitions/Product'
     examples:
-      - {"id": "1234", "name": "Keyboard Roccat", "comment": "Nice", "company_id": "4321"}
+      - {"id": 1, "name": "Keyboard Roccat", "comment": "Nice", "quantity": 2, "company_id": 1}

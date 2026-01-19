@@ -1,0 +1,57 @@
+# Company Queries
+query GetCompanies {
+  company {
+    id
+    name
+    created_at
+    updated_at
+  }
+}
+
+query GetCompanyById($id: Int!) {
+  company_by_pk(id: $id) {
+    id
+    name
+    created_at
+    updated_at
+  }
+}
+
+# Product Queries
+query GetProducts {
+  product {
+    id
+    name
+    comment
+    quantity
+    company_id
+    company {
+      id
+      name
+    }
+  }
+}
+
+query GetProductById($id: Int!) {
+  product_by_pk(id: $id) {
+    id
+    name
+    comment
+    quantity
+    company_id
+    company {
+      id
+      name
+    }
+  }
+}
+
+query GetProductsByCompany($companyId: Int!) {
+  product(where: { company_id: { _eq: $companyId } }) {
+    id
+    name
+    comment
+    quantity
+    company_id
+  }
+}

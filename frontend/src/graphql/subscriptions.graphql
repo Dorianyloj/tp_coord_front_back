@@ -1,0 +1,34 @@
+# Product Subscriptions - Real-time updates
+subscription ProductsSubscription {
+  product {
+    id
+    name
+    comment
+    quantity
+    company_id
+    company {
+      id
+      name
+    }
+  }
+}
+
+subscription ProductsByCompanySubscription($companyId: Int!) {
+  product(where: { company_id: { _eq: $companyId } }) {
+    id
+    name
+    comment
+    quantity
+    company_id
+  }
+}
+
+# Company Subscriptions
+subscription CompaniesSubscription {
+  company {
+    id
+    name
+    created_at
+    updated_at
+  }
+}

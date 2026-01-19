@@ -4,13 +4,11 @@ services:
     restart: unless-stopped
     image: postgres:latest
     environment:
-      - ENGINE=postgresql,
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASS}
-      - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - ./dockerdata/postgres:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - 5440:5432
     healthcheck:
@@ -79,7 +77,30 @@ services:
     networks:
       - course_tp_coord_front_back
 
+  hasura:
+    container_name: hasura_tp_coord_front_back
+    image: hasura/graphql-engine:v2.44.0
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    env_file: .env
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USERNAME}:${DB_PASS}@db_tp_coord_front_back:5432/${DB_NAME}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET:-hasura_admin_secret}
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256","key":"your-super-secret-jwt-key-min-32-chars"}'
+    depends_on:
+      db_tp_coord_front_back:
+        condition: service_healthy
+    networks:
+      - course_tp_coord_front_back
+
 networks:
   course_tp_coord_front_back:
     name: course_tp_coord_front_back
     driver: bridge
+
+volumes:
+  postgres_data:

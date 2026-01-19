@@ -1,0 +1,28 @@
+Get single Company endpoint
+---
+tags:
+  - Companies
+parameters:
+  - in: path
+    name: cmp_id
+    type: integer
+    required: true
+definitions:
+  Company:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      created_at:
+        type: string
+      updated_at:
+        type: string
+responses:
+  200:
+    description: A company matching the specified id
+    schema:
+      $ref: '#/definitions/Company'
+    examples:
+      - {"id": 1, "name": "Acme Corp", "created_at": "19 Jan 2026 - 10:00:00", "updated_at": "19 Jan 2026 - 10:00:00"}

@@ -39,8 +39,11 @@ def has_permission(model, method):
     # return current_user.is_authenticated
 
 @blueprint.route('/company/', endpoint='company-without-id', methods=['GET'])
+@swag_from('swagger/company_without_id_specs.yml', endpoint='base_blueprint.company-without-id', methods=['GET'])
 @blueprint.route('/company/<int:cmp_id>', endpoint='company-with-id', methods=['GET'])
+@swag_from('swagger/company_with_id_specs.yml', endpoint='base_blueprint.company-with-id', methods=['GET'])
 @blueprint.route('/company/', endpoint='company-create', methods=['POST'])
+@swag_from('swagger/company_create_specs.yml', endpoint='base_blueprint.company-create', methods=['POST'])
 def company(cmp_id=None):
     if not has_permission('Company', request.method):
         return "You need to be authenticated", 401

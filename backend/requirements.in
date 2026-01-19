@@ -11,3 +11,4 @@ gevent
 flask-restx
 psycopg2
 flasgger
+PyJWT

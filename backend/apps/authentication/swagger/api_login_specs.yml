@@ -1,0 +1,47 @@
+API Login endpoint - Returns JWT token with Hasura claims
+---
+tags:
+  - Authentication
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: "johndoe"
+        password:
+          type: string
+          example: "password123"
+definitions:
+  LoginResponse:
+    type: object
+    properties:
+      token:
+        type: string
+        description: JWT token with Hasura claims
+      user:
+        type: object
+        properties:
+          id:
+            type: integer
+          username:
+            type: string
+          email:
+            type: string
+          company_id:
+            type: integer
+responses:
+  200:
+    description: Login successful
+    schema:
+      $ref: '#/definitions/LoginResponse'
+  401:
+    description: Invalid credentials

@@ -1,0 +1,51 @@
+# Product Mutations
+mutation CreateProduct($name: String!, $comment: String!, $quantity: Int!, $company_id: Int!) {
+  insert_product_one(object: { name: $name, comment: $comment, quantity: $quantity, company_id: $company_id }) {
+    id
+    name
+    comment
+    quantity
+    company_id
+  }
+}
+
+mutation UpdateProduct($id: Int!, $name: String!, $comment: String!, $quantity: Int!) {
+  update_product_by_pk(pk_columns: { id: $id }, _set: { name: $name, comment: $comment, quantity: $quantity }) {
+    id
+    name
+    comment
+    quantity
+    company_id
+  }
+}
+
+mutation DeleteProduct($id: Int!) {
+  delete_product_by_pk(id: $id) {
+    id
+  }
+}
+
+# Company Mutations
+mutation CreateCompany($name: String!) {
+  insert_company_one(object: { name: $name }) {
+    id
+    name
+    created_at
+    updated_at
+  }
+}
+
+mutation UpdateCompany($id: Int!, $name: String!) {
+  update_company_by_pk(pk_columns: { id: $id }, _set: { name: $name }) {
+    id
+    name
+    created_at
+    updated_at
+  }
+}
+
+mutation DeleteCompany($id: Int!) {
+  delete_company_by_pk(id: $id) {
+    id
+  }
+}

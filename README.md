@@ -28,5 +28,30 @@ Au lancement, le service `db_migration_tp_coord_front_back` s'occupera d'appliqu
 
 ## Utilisation
 Après le lancement, accèdez au backend flask à l'URL suivante pour vous créer un compte http://localhost:5005/register. Vous pourrez ensuite aller sur http://localhost:5005/login pour vous connecter.
-L'API swagger est disponible à l'URL suivante :  
+L'API swagger est disponible à l'URL suivante :
 http://localhost:5005/apidocs
+
+## Hasura GraphQL
+
+La console Hasura est accessible sur http://localhost:8080
+**Admin Secret** : `hasura_admin_secret`
+
+### Sauvegarder les métadonnées Hasura
+
+Pour sauvegarder les métadonnées et les versionner, tu peux exporter via l'API après avoir configuré tes tables :
+
+```bash
+curl -d '{"type": "export_metadata", "args": {}}' \
+  -H "X-Hasura-Admin-Secret: hasura_admin_secret" \
+  http://localhost:8080/v1/metadata > hasura/metadata.json
+```
+
+### Réimporter les métadonnées
+
+Pour réimporter les métadonnées plus tard :
+
+```bash
+curl -d "@hasura/metadata.json" \
+  -H "X-Hasura-Admin-Secret: hasura_admin_secret" \
+  http://localhost:8080/v1/metadata
+```
