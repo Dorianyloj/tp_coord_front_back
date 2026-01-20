@@ -1,5 +1,29 @@
 # Coordination frontend / backend
 
+## Quick Start
+
+```bash
+# 1. Cloner le repo
+git clone https://github.com/Dorianyloj/tp_coord_front_back.git
+cd tp_coord_front_back
+
+# 2. Créer les fichiers d'environnement
+cp .env-template .env
+cp frontend/.env-template frontend/.env.local
+
+# 3. Lancer la stack Docker
+docker compose up -d --build
+
+# 4. Attendre que tout soit prêt (~30s) puis accéder aux services :
+#    - Frontend : http://localhost:3000
+#    - Backend API : http://localhost:5005
+#    - Hasura Console : http://localhost:8080
+```
+
+**Identifiants Hasura** : `hasura_admin_secret`
+
+---
+
 ## Contenu du repository
 Ce repository est constitué d'une application fullstack :
 - Base de donnée **Postgresql** accessible sur le port `5440`
