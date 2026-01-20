@@ -28,10 +28,14 @@ jobs:
 
       - name: Build & Push Frontend
         run: |
-          docker build -t ${{ env.REGISTRY }}/${{ github.repository }}/frontend:latest ./frontend
-          docker push ${{ env.REGISTRY }}/${{ github.repository }}/frontend:latest
+          IMAGE=${{ env.REGISTRY }}/${{ github.repository }}/frontend:latest
+          IMAGE=${IMAGE,,}
+          docker build -t $IMAGE ./frontend
+          docker push $IMAGE
 
       - name: Build & Push Backend
         run: |
-          docker build -t ${{ env.REGISTRY }}/${{ github.repository }}/backend:latest ./backend
-          docker push ${{ env.REGISTRY }}/${{ github.repository }}/backend:latest
+          IMAGE=${{ env.REGISTRY }}/${{ github.repository }}/backend:latest
+          IMAGE=${IMAGE,,}
+          docker build -t $IMAGE ./backend
+          docker push $IMAGE

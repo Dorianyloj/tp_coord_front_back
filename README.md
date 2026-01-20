@@ -220,3 +220,4 @@ Deux workflows sont configurés dans `.github/workflows/` :
 ├── hasura/                 # Métadonnées Hasura
 └── docker-compose.yaml
 ```
+---
