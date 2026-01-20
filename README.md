@@ -5,6 +5,7 @@ Ce repository est constitué d'une application fullstack :
 - Base de donnée **Postgresql** accessible sur le port `5440`
 - Backend **Flask** accessible sur le port `5005`
 - Frontend **Next JS** accessible sur le port `3000`
+- **Hasura GraphQL** accessible sur le port `8080`
 
 Le backend utilise l'ORM SQLAlchemy et possède trois modèles :
 - User
@@ -21,8 +22,10 @@ Veuillez réaliser les étapes suivantes pour executer la stack :
 - **Backend** : Créez un fichier `.env` à partir du `.env-template` et complétez le avec les informations nécessaires.
 - **Frontend** : Créez un fichier `.env.local` à partir du `.env-template` et complétez le avec les informations nécessaires.
 
-Pour lancer la stack, executez la commande suivante :  
-`docker compose watch`
+Pour lancer la stack, executez la commande suivante :
+```bash
+docker compose watch
+```
 
 Au lancement, le service `db_migration_tp_coord_front_back` s'occupera d'appliquer les migrations de base de données managées par `SQLAlchemy`.
 
@@ -30,6 +33,8 @@ Au lancement, le service `db_migration_tp_coord_front_back` s'occupera d'appliqu
 Après le lancement, accèdez au backend flask à l'URL suivante pour vous créer un compte http://localhost:5005/register. Vous pourrez ensuite aller sur http://localhost:5005/login pour vous connecter.
 L'API swagger est disponible à l'URL suivante :
 http://localhost:5005/apidocs
+
+---
 
 ## Hasura GraphQL
 
@@ -54,4 +59,140 @@ Pour réimporter les métadonnées plus tard :
 curl -d "@hasura/metadata.json" \
   -H "X-Hasura-Admin-Secret: hasura_admin_secret" \
   http://localhost:8080/v1/metadata
+```
+
+---
+
+## Frontend GraphQL
+
+Le frontend utilise GraphQL pour communiquer avec Hasura. Les fonctionnalités suivantes ont été mises en place :
+
+### Types TypeScript générés (codegen)
+
+Les types TypeScript sont générés automatiquement à partir du schéma GraphQL Hasura.
+
+**Configuration** : `frontend/codegen.ts`
+
+**Générer les types** :
+```bash
+cd frontend
+npm run codegen
+```
+
+Les types sont générés dans `frontend/src/generated/graphql.ts`.
+
+### Helper GraphQL
+
+Un helper centralisé pour les requêtes GraphQL est disponible dans `frontend/src/lib/graphql.ts` :
+
+```typescript
+import { graphqlFetch } from '@/lib/graphql';
+import type { GetProductsQuery } from '@/generated/graphql';
+
+// Requête HTTP
+const data = await graphqlFetch<GetProductsQuery>(GET_PRODUCTS);
+```
+
+### Subscriptions WebSocket (Temps réel)
+
+Les composants `ProductList` et `CompanyList` supportent le mode temps réel via WebSocket.
+
+- Cochez "Temps réel (WebSocket)" pour activer les subscriptions
+- Les modifications dans Hasura apparaissent instantanément
+
+**Accès** : http://localhost:3000/dashboard
+
+---
+
+## Tests
+
+### Tests Frontend (Jest)
+
+Les tests du composant ProductList sont dans `frontend/src/__tests__/`.
+
+**Lancer les tests** :
+```bash
+cd frontend
+npm test
+```
+
+**Tests couverts** :
+- Affichage du loading
+- Affichage des produits
+- Affichage des erreurs
+- Bouton refresh
+- Checkbox temps réel
+- Headers du tableau
+
+### Tests Backend (pytest)
+
+Les tests de l'endpoint `/api/product` sont dans `backend/tests/`.
+
+**Lancer les tests** (dans le container Docker) :
+```bash
+docker exec backend_tp_coord_front_back bash -c "pip install pytest pytest-flask && pytest -v"
+```
+
+**Tests couverts** :
+- GET tous les produits
+- GET produit par ID
+- POST créer un produit
+- PUT modifier un produit
+- DELETE supprimer un produit
+- Filtrage par company_id
+- Relations avec Company
+
+---
+
+## CI/CD (GitHub Actions)
+
+Deux workflows sont configurés dans `.github/workflows/` :
+
+### CI - Tests automatiques (`ci.yml`)
+
+**Déclenché sur** : push/PR vers `main` ou `develop`
+
+| Job | Description |
+|-----|-------------|
+| `test-frontend` | Install → Tests Jest → Build Next.js |
+| `test-backend` | Setup PostgreSQL → Tests pytest |
+
+### CD - Build & Push images (`cd.yml`)
+
+**Déclenché sur** : push vers `main` ou tag `v*`
+
+| Job | Description |
+|-----|-------------|
+| `build-frontend` | Build et push vers GHCR |
+| `build-backend` | Build et push vers GHCR |
+
+**Images publiées** :
+- `ghcr.io/<username>/tp_coord_front_back/frontend:latest`
+- `ghcr.io/<username>/tp_coord_front_back/backend:latest`
+
+---
+
+## Structure du projet
+
+```
+.
+├── .github/workflows/      # CI/CD GitHub Actions
+│   ├── ci.yml              # Tests automatiques
+│   └── cd.yml              # Build & Push images
+├── backend/
+│   ├── apps/               # Application Flask
+│   ├── tests/              # Tests pytest
+│   └── Dockerfile
+├── frontend/
+│   ├── src/
+│   │   ├── __tests__/      # Tests Jest
+│   │   ├── components/     # Composants React
+│   │   ├── generated/      # Types GraphQL générés
+│   │   ├── graphql/        # Queries/Mutations/Subscriptions
+│   │   └── lib/            # Helper GraphQL
+│   ├── codegen.ts          # Configuration codegen
+│   ├── jest.config.cjs     # Configuration Jest
+│   └── Dockerfile
+├── hasura/                 # Métadonnées Hasura
+└── docker-compose.yaml
 ```
