@@ -32,7 +32,6 @@ export default function CompanyList() {
   const [error, setError] = useState<string | null>(null);
   const [realtime, setRealtime] = useState(false);
 
-  // Fetch initial (HTTP)
   const fetchCompanies = async () => {
     try {
       setLoading(true);

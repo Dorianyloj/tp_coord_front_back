@@ -20,7 +20,6 @@ const config: CodegenConfig = {
       ],
       config: {
         skipTypename: false,
-        // Pas de hooks, juste les types !
         withHooks: false,
         withComponent: false,
         withHOC: false,

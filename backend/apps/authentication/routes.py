@@ -66,20 +66,20 @@ def login():
 
     if 'login' in request.form:
 
-        # read form data
+        
         username = request.form['username']
         password = request.form['password']
 
-        # Locate user
+       
         user = Users.query.filter_by(username=username).first()
 
-        # Check the password
+        
         if user and verify_pass(password, user.password):
 
             login_user(user)
             return redirect('/apidocs')
 
-        # Something (user or pass) is not ok
+        
         return render_template('accounts/login.html',
                                msg='Mauvais pseudo ou mot de passe',
                                form=login_form)
@@ -102,7 +102,7 @@ def register():
         form_data['company_id'] = company_id
         form_data.pop('company', None)
 
-        # Check usename exists
+        
         user = Users.query.filter_by(username=username).first()
         if user:
             return render_template('accounts/register.html',
@@ -110,7 +110,7 @@ def register():
                                    success=False,
                                    form=create_account_form)
 
-        # Check email exists
+        
         user = Users.query.filter_by(email=email).first()
         if user:
             return render_template('accounts/register.html',
@@ -118,7 +118,7 @@ def register():
                                    success=False,
                                    form=create_account_form)
 
-        # else we can create the user
+        
         user = Users(**form_data)
         db.session.add(user)
         db.session.commit()
