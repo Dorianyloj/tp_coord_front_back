@@ -87,6 +87,56 @@ curl -d "@hasura/metadata.json" \
 
 ---
 
+## Authentification JWT
+
+L'application utilise JWT pour l'authentification entre le frontend, le backend Flask et Hasura.
+
+### Récupérer un token
+
+**Via l'API** (pour le frontend ou tests) :
+```bash
+curl -X POST http://localhost:5005/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "votre_username", "password": "votre_password"}'
+```
+
+**Réponse** :
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": { "id": 1, "username": "...", "email": "..." }
+}
+```
+
+### Utiliser le token avec Hasura
+
+```bash
+curl -X POST http://localhost:8080/v1/graphql \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <votre_token>" \
+  -d '{"query": "{ product { id name } }"}'
+```
+
+### Structure du token JWT
+
+Le token contient des claims Hasura pour le contrôle d'accès :
+```json
+{
+  "sub": "1",
+  "exp": 1234567890,
+  "https://hasura.io/jwt/claims": {
+    "x-hasura-allowed-roles": ["user", "admin"],
+    "x-hasura-default-role": "user",
+    "x-hasura-user-id": "1",
+    "x-hasura-company-id": "2"
+  }
+}
+```
+
+Ces claims permettent de configurer des permissions dans Hasura (ex: un user ne voit que les produits de sa company).
+
+---
+
 ## Frontend GraphQL
 
 Le frontend utilise GraphQL pour communiquer avec Hasura. Les fonctionnalités suivantes ont été mises en place :
